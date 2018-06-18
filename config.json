@@ -1,12 +1,12 @@
 {
   "pascal":
   {
-    "data_path": "/home/gpu_users/meetshah/segdata/pascal/VOCdevkit/VOC2012/"
+    "data_path": "/media/sdb/CVDataset/VOC/VOCdevkit/VOC2012/"
   },
 
   "sbd":
   {
-    "data_path": "/home/gpu_users/meetshah/segdata/pascal/benchmark_RELEASE/"
+    "data_path": "/media/sdb/CVDataset/VOC/benchmark_RELEASE/"
   },
 
   "camvid":
@@ -16,12 +16,12 @@
   
   "ade20k":
   {
-    "data_path": "/home/meet/datasets/ADE20K/"
+    "data_path": "/media/sdb/CVDataset/ObjectSegmentation/ADE20K/"
   },
   
   "mit_sceneparsing_benchmark":
   {
-    "data_path": "/home/ubuntu/DATA/ADEChallengeData2016/"
+    "data_path": "/media/sdb/CVDataset/ObjectSegmentation/ADEChallengeData2016/"
   },
 
   "nyuv2":
@@ -36,6 +36,6 @@
   
   "cityscapes":
   {
-    "data_path": "/home/meet/datasets/cityscapes/"
+    "data_path": "/media/sdb/CVDataset/ObjectSegmentation/archives/Cityscapes_archives/leftImg8bit_trainvaltest/"
   }
 }

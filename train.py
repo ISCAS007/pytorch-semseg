@@ -128,7 +128,8 @@ if __name__ == '__main__':
     parser.add_argument('--arch', nargs='?', type=str, default='fcn8s', 
                         help='Architecture to use [\'fcn8s, unet, segnet etc\']')
     parser.add_argument('--dataset', nargs='?', type=str, default='pascal', 
-                        help='Dataset to use [\'pascal, camvid, ade20k etc\']')
+                        help='Dataset to use [\'pascal, camvid, ade20k etc\']',
+                        choices=['pascal','camvid','ade20k','mit_sceneparsing_benchmark','cityscapes','nyuv2','sunrgbd'])
     parser.add_argument('--img_rows', nargs='?', type=int, default=256, 
                         help='Height of the input image')
     parser.add_argument('--img_cols', nargs='?', type=int, default=256, 
