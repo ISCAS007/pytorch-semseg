@@ -16,7 +16,7 @@
   
   "ade20k":
   {
-    "data_path": "/media/sdb/CVDataset/ObjectSegmentation/ADE20K/"
+    "data_path": "/media/sdb/CVDataset/ObjectSegmentation/ADE20K_2016_07_26/"
   },
   
   "mit_sceneparsing_benchmark":
