@@ -16,6 +16,8 @@ from ptsemseg.loader import get_loader, get_data_path
 from ptsemseg.metrics import runningScore
 from ptsemseg.loss import *
 from ptsemseg.augmentations import *
+from tensorboardX import SummaryWriter
+import time
 
 def train(args):
 
@@ -75,10 +77,16 @@ def train(args):
                   .format(args.resume, checkpoint['epoch']))
         else:
             print("No checkpoint found at '{}'".format(args.resume)) 
-
-    best_iou = -100.0 
+    
+    time_str = time.strftime("%Y-%m-%d___%H-%M-%S", time.localtime())
+    log_dir=os.path.expanduser('~/tmp/logs/pytorch',args.arch,'semseg',args.dataset,'semseg',time_str)
+    os.makedirs(log_dir, exist_ok=True)
+    writer = SummaryWriter(log_dir=log_dir)
+                
+    best_iou = 0.6 
     for epoch in range(args.n_epoch):
         model.train()
+        running_metrics.reset()
         for i, (images, labels) in enumerate(trainloader):
             images = Variable(images.cuda())
             labels = Variable(labels.cuda())
@@ -100,7 +108,19 @@ def train(args):
 
             if (i+1) % 20 == 0:
                 print("Epoch [%d/%d] Loss: %.4f" % (epoch+1, args.n_epoch, loss.data[0]))
-
+            
+            pred = outputs.data.max(1)[1].cpu().numpy()
+            gt = labels.data.cpu().numpy()
+            running_metrics.update(gt, pred)
+        score, class_iou = running_metrics.get_scores()
+        loader_name='train'
+        writer.add_scalar('%s/loss' % loader_name,
+                              np.mean(loss), epoch)
+        writer.add_scalar('%s/acc' % loader_name,
+                          score['Overall Acc: \t'], epoch)
+        writer.add_scalar('%s/iou' % loader_name,
+                          score['Mean IoU : \t'], epoch)
+            
         model.eval()
         for i_val, (images_val, labels_val) in tqdm(enumerate(valloader)):
             images_val = Variable(images_val.cuda(), volatile=True)
@@ -112,6 +132,14 @@ def train(args):
             running_metrics.update(gt, pred)
 
         score, class_iou = running_metrics.get_scores()
+        loader_name='val'
+        writer.add_scalar('%s/loss' % loader_name,
+                              np.mean(loss), epoch)
+        writer.add_scalar('%s/acc' % loader_name,
+                          score['Overall Acc: \t'], epoch)
+        writer.add_scalar('%s/iou' % loader_name,
+                          score['Mean IoU : \t'], epoch)
+        
         for k, v in score.items():
             print(k, v)
         running_metrics.reset()
