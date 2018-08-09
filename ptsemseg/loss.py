@@ -28,7 +28,7 @@ def cross_entropy2d(input, target, weight=None, size_average=True):
     loss = F.nll_loss(log_p, target, ignore_index=250,
                       weight=weight, size_average=False)
     if size_average:
-        loss /= mask.data.sum()
+        loss /= mask.data.sum().to(torch.float32)
     return loss
 
 def bootstrapped_cross_entropy2d(input, target, K, weight=None, size_average=True):
@@ -71,6 +71,6 @@ def multi_scale_cross_entropy2d(input, target, weight=None, size_average=True, s
 
     loss = 0.0
     for i, inp in enumerate(input):
-        loss = loss + scale_weight[i] * cross_entropy2d(input=inp, target=target, weight=weight, size_average=size_average)
+        loss = loss + scale_weight[i].cuda() * cross_entropy2d(input=inp, target=target, weight=weight, size_average=size_average)
 
     return loss
