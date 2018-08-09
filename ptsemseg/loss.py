@@ -71,6 +71,6 @@ def multi_scale_cross_entropy2d(input, target, weight=None, size_average=True, s
 
     loss = 0.0
     for i, inp in enumerate(input):
-        loss = loss + scale_weight[i] * cross_entropy2d(input=inp, target=target, weight=weight, size_average=size_average)
+        loss = loss + scale_weight[i].cuda() * cross_entropy2d(input=inp, target=target, weight=weight, size_average=size_average)
 
     return loss
