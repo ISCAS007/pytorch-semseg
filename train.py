@@ -119,7 +119,7 @@ def train(args):
         score, class_iou = running_metrics.get_scores()
         loader_name='train'
         writer.add_scalar('%s/loss' % loader_name,
-                              np.mean(loss), epoch)
+                              loss.data[0], epoch)
         writer.add_scalar('%s/acc' % loader_name,
                           score['Overall Acc: \t'], epoch)
         writer.add_scalar('%s/iou' % loader_name,
@@ -138,7 +138,7 @@ def train(args):
         score, class_iou = running_metrics.get_scores()
         loader_name='val'
         writer.add_scalar('%s/loss' % loader_name,
-                              np.mean(loss), epoch)
+                              loss.data[0], epoch)
         writer.add_scalar('%s/acc' % loader_name,
                           score['Overall Acc: \t'], epoch)
         writer.add_scalar('%s/iou' % loader_name,
