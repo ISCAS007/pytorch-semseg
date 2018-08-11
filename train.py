@@ -79,7 +79,8 @@ def train(args):
             print("No checkpoint found at '{}'".format(args.resume)) 
     
     time_str = time.strftime("%Y-%m-%d___%H-%M-%S", time.localtime())
-    log_dir=os.path.expanduser('~/tmp/logs/pytorch',args.arch,'semseg',args.dataset,'semseg',time_str)
+    root_log_dir=os.path.expanduser('~/tmp/logs/pytorch')
+    log_dir=os.path.join(root_log_dir,args.arch,'semseg',args.dataset,'semseg',time_str)
     os.makedirs(log_dir, exist_ok=True)
     writer = SummaryWriter(log_dir=log_dir)
                 
@@ -109,7 +110,10 @@ def train(args):
             if (i+1) % 20 == 0:
                 print("Epoch [%d/%d] Loss: %.4f" % (epoch+1, args.n_epoch, loss.data[0]))
             
-            pred = outputs.data.max(1)[1].cpu().numpy()
+            if type(outputs) is tuple:
+                pred = outputs[-1].data.max(1)[1].cpu().numpy()
+            else:
+                pred = outputs.data.max(1)[1].cpu().numpy()
             gt = labels.data.cpu().numpy()
             running_metrics.update(gt, pred)
         score, class_iou = running_metrics.get_scores()
