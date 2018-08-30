@@ -16,7 +16,12 @@ pspnet_specs = {
          'input_size': (473, 473),
          'block_config': [3, 4, 23, 3],
     },
-
+     'pascal': 
+    {
+         'n_classes': 21,
+         'input_size': (473, 473),
+         'block_config': [3, 4, 23, 3],
+    },
     'cityscapes': 
     {
          'n_classes': 19,
@@ -344,13 +349,14 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import scipy.misc as m
     from ptsemseg.loader.cityscapes_loader import cityscapesLoader as cl
-    psp = pspnet(version='cityscapes')
+#    psp = pspnet(version='cityscapes')
+    psp = pspnet(version='pascalvoc')
     
     # Just need to do this one time
-    caffemodel_dir_path = 'PATH_TO_PSPNET_DIR/evaluation/model'
-    psp.load_pretrained_model(model_path=os.path.join(caffemodel_dir_path, 'pspnet101_cityscapes.caffemodel'))
+    caffemodel_dir_path = '/media/sdb/yzbx/weights'
+#    psp.load_pretrained_model(model_path=os.path.join(caffemodel_dir_path, 'pspnet101_cityscapes.caffemodel'))
     #psp.load_pretrained_model(model_path=os.path.join(caffemodel_dir_path, 'pspnet50_ADE20K.caffemodel'))
-    #psp.load_pretrained_model(model_path=os.path.join(caffemodel_dir_path, 'pspnet101_VOC2012.caffemodel'))
+    psp.load_pretrained_model(model_path=os.path.join(caffemodel_dir_path, 'pspnet101_VOC2012.caffemodel'))
     
     # psp.load_state_dict(torch.load('psp.pth'))
 
@@ -358,22 +364,22 @@ if __name__ == '__main__':
     psp.cuda(cd)
     psp.eval()
 
-    dataset_root_dir = 'PATH_TO_CITYSCAPES_DIR'
-    dst = cl(root=dataset_root_dir)
-    img = m.imread(os.path.join(dataset_root_dir, 'leftImg8bit/demoVideo/stuttgart_00/stuttgart_00_000000_000010_leftImg8bit.png'))
-    m.imsave('cropped.png', img)
-    orig_size = img.shape[:-1]
-    img = img.transpose(2, 0, 1)
-    img = img.astype(np.float64)
-    img -= np.array([123.68, 116.779, 103.939])[:, None, None]
-    img = np.copy(img[::-1, :, :])
-    img = torch.from_numpy(img).float() # convert to torch tensor
-    img = img.unsqueeze(0)
-
-    out = psp.tile_predict(img)
-    pred = np.argmax(out, axis=1)[0]
-    decoded = dst.decode_segmap(pred)
-    m.imsave('cityscapes_sttutgart_tiled.png', decoded)
+#    dataset_root_dir = 'PATH_TO_CITYSCAPES_DIR'
+#    dst = cl(root=dataset_root_dir)
+#    img = m.imread(os.path.join(dataset_root_dir, 'leftImg8bit/demoVideo/stuttgart_00/stuttgart_00_000000_000010_leftImg8bit.png'))
+#    m.imsave('cropped.png', img)
+#    orig_size = img.shape[:-1]
+#    img = img.transpose(2, 0, 1)
+#    img = img.astype(np.float64)
+#    img -= np.array([123.68, 116.779, 103.939])[:, None, None]
+#    img = np.copy(img[::-1, :, :])
+#    img = torch.from_numpy(img).float() # convert to torch tensor
+#    img = img.unsqueeze(0)
+#
+#    out = psp.tile_predict(img)
+#    pred = np.argmax(out, axis=1)[0]
+#    decoded = dst.decode_segmap(pred)
+#    m.imsave('cityscapes_sttutgart_tiled.png', decoded)
     #m.imsave('cityscapes_sttutgart_tiled.png', pred) 
 
     checkpoints_dir_path = 'checkpoints'
@@ -381,7 +387,7 @@ if __name__ == '__main__':
         os.mkdir(checkpoints_dir_path)
     psp = torch.nn.DataParallel(psp, device_ids=range(torch.cuda.device_count())) # append `module.`
     state = {'model_state': psp.state_dict()}
-    torch.save(state, os.path.join(checkpoints_dir_path, "pspnet_101_cityscapes.pth"))
+#    torch.save(state, os.path.join(checkpoints_dir_path, "pspnet_101_cityscapes.pth"))
     #torch.save(state, os.path.join(checkpoints_dir_path, "pspnet_50_ade20k.pth"))
-    #torch.save(state, os.path.join(checkpoints_dir_path, "pspnet_101_pascalvoc.pth"))
-    print("Output Shape {} \t Input Shape {}".format(out.shape, img.shape))
+    torch.save(state, os.path.join(checkpoints_dir_path, "pspnet_101_pascalvoc.pth"))
+#    print("Output Shape {} \t Input Shape {}".format(out.shape, img.shape))
